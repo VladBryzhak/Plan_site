@@ -1,5 +1,5 @@
 /* =====================
-   VARIABLES & RESET
+   VARIABLES — LIGHT THEME
    ===================== */
 :root {
     --bg: #f5f4f0;
@@ -7,23 +7,50 @@
     --text: #1a1a18;
     --muted: #7a7a74;
     --border: rgba(0, 0, 0, 0.08);
+    --border-strong: rgba(0, 0, 0, 0.18);
     --teal: #1D9E75;
     --teal-bg: #E1F5EE;
     --teal-text: #085041;
     --blue: #185FA5;
     --blue-bg: #E6F1FB;
-    --blue-text: #0C447C;
     --coral: #D85A30;
     --coral-bg: #FAECE7;
     --coral-text: #712B13;
     --gray-bg: #F1EFE8;
-    --gray-text: #444441;
+    --done-bg: #E1F5EE;
+    --done-border: #1D9E75;
+    --done-text: #085041;
     --radius: 14px;
     --radius-sm: 8px;
     --font: 'DM Sans', sans-serif;
     --font-serif: 'DM Serif Display', serif;
+    --transition: 0.2s ease;
 }
 
+/* =====================
+   DARK THEME
+   ===================== */
+body.dark {
+    --bg: #141413;
+    --card: #1e1e1c;
+    --text: #f0efea;
+    --muted: #8a8a84;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.18);
+    --teal-bg: #0a2e22;
+    --teal-text: #5DCAA5;
+    --blue-bg: #0c2340;
+    --coral-bg: #2e1208;
+    --coral-text: #F0997B;
+    --gray-bg: #252523;
+    --done-bg: #0a2e22;
+    --done-border: #1D9E75;
+    --done-text: #5DCAA5;
+}
+
+/* =====================
+   RESET
+   ===================== */
 *,
 *::before,
 *::after {
@@ -37,8 +64,9 @@ body {
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    padding-bottom: 2rem;
+    padding-bottom: 3rem;
     -webkit-font-smoothing: antialiased;
+    transition: background var(--transition), color var(--transition);
 }
 
 /* =====================
@@ -51,6 +79,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
+    transition: background var(--transition), border-color var(--transition);
 }
 
 .header-top {
@@ -65,12 +94,41 @@ body {
     font-size: 22px;
     font-weight: 400;
     letter-spacing: -0.3px;
+    color: var(--text);
 }
 
 .header-sub {
     font-size: 13px;
     color: var(--muted);
     margin-top: 2px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* =====================
+   ICON BUTTON (theme toggle)
+   ===================== */
+.icon-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--muted);
+    transition: background var(--transition), color var(--transition);
+    flex-shrink: 0;
+}
+
+.icon-btn:active {
+    opacity: 0.7;
 }
 
 /* =====================
@@ -102,7 +160,6 @@ body {
    ===================== */
 .tabs {
     display: flex;
-    gap: 0;
     overflow-x: auto;
     scrollbar-width: none;
 }
@@ -162,6 +219,7 @@ body {
     padding: 0.75rem;
     text-align: center;
     border: 1px solid var(--border);
+    transition: background var(--transition);
 }
 
 .stat-val {
@@ -194,6 +252,7 @@ body {
     cursor: pointer;
     transition: border-color 0.15s, background 0.15s;
     -webkit-tap-highlight-color: transparent;
+    position: relative;
 }
 
 .day-pill.active {
@@ -206,13 +265,32 @@ body {
 }
 
 .day-pill.active .dp-short {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.55);
+}
+
+/* Done checkmark on day pill */
+.day-pill.done::after {
+    content: '✓';
+    position: absolute;
+    top: -6px;
+    right: -4px;
+    background: var(--teal);
+    color: #fff;
+    font-size: 9px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 16px;
 }
 
 .dp-label {
     font-size: 12px;
     font-weight: 500;
     margin-bottom: 5px;
+    color: var(--text);
 }
 
 .dp-dot {
@@ -253,6 +331,13 @@ body {
     border: 1px solid var(--border);
     padding: 1.1rem 1.25rem;
     margin-bottom: 1rem;
+    transition: background var(--transition), border-color var(--transition);
+}
+
+/* Done state for workout card */
+.card.done-card {
+    border-color: var(--done-border);
+    background: var(--done-bg);
 }
 
 .card-header {
@@ -275,33 +360,63 @@ body {
 
 .icon-teal {
     background: var(--teal-bg);
-    color: var(--teal);
 }
 
 .icon-blue {
     background: var(--blue-bg);
-    color: var(--blue);
 }
 
 .icon-coral {
     background: var(--coral-bg);
-    color: var(--coral);
 }
 
 .icon-gray {
     background: var(--gray-bg);
-    color: #666;
 }
 
 .card-title {
     font-size: 15px;
     font-weight: 500;
+    color: var(--text);
 }
 
 .card-sub {
     font-size: 12px;
     color: var(--muted);
     margin-top: 2px;
+}
+
+/* =====================
+   DONE BUTTON
+   ===================== */
+.done-btn {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 11px;
+    border-radius: var(--radius-sm);
+    border: 1px dashed var(--border-strong);
+    background: transparent;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.done-btn:active {
+    opacity: 0.7;
+}
+
+.done-btn.marked {
+    border-style: solid;
+    border-color: var(--done-border);
+    background: var(--done-bg);
+    color: var(--done-text);
 }
 
 /* =====================
@@ -323,6 +438,7 @@ body {
 
 .ex-name {
     flex: 1;
+    color: var(--text);
 }
 
 .ex-sets {
@@ -343,6 +459,7 @@ body {
     font-size: 13px;
     color: var(--muted);
     margin-bottom: 1rem;
+    transition: background var(--transition);
 }
 
 .week-nav {
@@ -355,6 +472,7 @@ body {
 .week-nav-label {
     font-size: 14px;
     font-weight: 500;
+    color: var(--text);
 }
 
 .wk-btn {
@@ -371,7 +489,7 @@ body {
 
 .wk-btn.active {
     background: var(--text);
-    color: #fff;
+    color: var(--card);
     border-color: var(--text);
 }
 
@@ -385,6 +503,7 @@ body {
     background: var(--bg);
     border-radius: var(--radius-sm);
     padding: 0.7rem 0.85rem;
+    transition: background var(--transition);
 }
 
 .meal-time {
@@ -397,6 +516,7 @@ body {
     font-weight: 500;
     font-size: 13px;
     margin-bottom: 2px;
+    color: var(--text);
 }
 
 .meal-desc {
@@ -412,6 +532,7 @@ body {
     font-size: 15px;
     font-weight: 500;
     margin-bottom: 0.75rem;
+    color: var(--text);
 }
 
 .tip-row {
@@ -421,6 +542,7 @@ body {
     border-bottom: 1px solid var(--border);
     font-size: 13px;
     line-height: 1.5;
+    color: var(--text);
 }
 
 .tip-row:last-child {
@@ -441,7 +563,7 @@ body {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.5);
     z-index: 200;
     align-items: flex-end;
     justify-content: center;
@@ -454,9 +576,10 @@ body {
 .modal {
     background: var(--card);
     border-radius: var(--radius) var(--radius) 0 0;
-    padding: 1.5rem 1.25rem;
+    padding: 1.5rem 1.25rem 2rem;
     width: 100%;
     max-width: 480px;
+    transition: background var(--transition);
 }
 
 .modal-title {
@@ -464,6 +587,7 @@ body {
     font-size: 20px;
     font-weight: 400;
     margin-bottom: 0.5rem;
+    color: var(--text);
 }
 
 .modal-sub {
@@ -529,19 +653,44 @@ body {
 .toast {
     display: none;
     position: fixed;
-    bottom: 1.5rem;
+    bottom: 2rem;
     left: 50%;
     transform: translateX(-50%);
     background: var(--text);
-    color: #fff;
+    color: var(--card);
     padding: 10px 20px;
     border-radius: 100px;
     font-size: 13px;
     z-index: 300;
     white-space: nowrap;
+    pointer-events: none;
 }
 
 .toast.show {
+    display: block;
+}
+
+/* =====================
+   OFFLINE BANNER
+   ===================== */
+.offline-banner {
+    display: none;
+    background: #FAEEDA;
+    color: #854F0B;
+    text-align: center;
+    font-size: 13px;
+    padding: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+}
+
+body.dark .offline-banner {
+    background: #2e2200;
+    color: #FAC775;
+}
+
+.offline-banner.show {
     display: block;
 }
 
@@ -553,8 +702,14 @@ body {
         font-size: 18px;
     }
 
-    .cal-btn span {
-        display: none;
+    .cal-btn {
+        font-size: 0;
+        gap: 0;
+        padding: 8px 10px;
+    }
+
+    .cal-btn svg {
+        margin: 0;
     }
 
     .dp-short {
