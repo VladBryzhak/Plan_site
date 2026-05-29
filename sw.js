@@ -7,13 +7,13 @@ const CACHE_NAME = 'fitness-plan-v2';
 
 /* Всі файли, які треба закешувати при першому відкритті */
 const FILES_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/css/style.css',
-  '/js/data.js',
-  '/js/app.js',
-  '/manifest.json',
-  '/icons/icon-192.png',
+  './',
+  './index.html',
+  './css/style.css',
+  './js/data.js',
+  './js/app.js',
+  './manifest.json',
+  './icons/main-icon-192.png',
   '/icons/icon-512.png',
   /* Шрифти Google Fonts кешуються автоматично при першому завантаженні */
 ];
@@ -81,7 +81,7 @@ self.addEventListener('fetch', event => {
         /* Мережа недоступна і файл не в кеші */
         /* Для HTML-сторінок повертаємо головну сторінку */
         if (event.request.destination === 'document') {
-          return caches.match('/index.html');
+          return caches.match('./index.html');
         }
       });
     })
