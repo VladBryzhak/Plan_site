@@ -1,0 +1,133 @@
+/* =====================
+   HEADER
+   ===================== */
+.header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 1.25rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: background var(--transition), border-color var(--transition);
+}
+
+.header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.header-title {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: -0.3px;
+    color: var(--text);
+}
+
+.header-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 2px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* =====================
+   ICON BUTTON (theme toggle)
+   ===================== */
+.icon-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--muted);
+    transition: background var(--transition), color var(--transition);
+    flex-shrink: 0;
+}
+
+.icon-btn:active {
+    opacity: 0.7;
+}
+
+/* =====================
+   CALENDAR BUTTON
+   ===================== */
+.cal-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: var(--teal);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.15s;
+}
+
+.cal-btn:active {
+    opacity: 0.85;
+}
+
+/* =====================
+   TABS
+   ===================== */
+.tabs {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.tab {
+    padding: 10px 18px;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s;
+}
+
+.tab.active {
+    color: var(--text);
+    font-weight: 500;
+    border-bottom-color: var(--text);
+}
+
+/* =====================
+   CONTENT & SECTIONS
+   ===================== */
+.content {
+    padding: 1.25rem;
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}

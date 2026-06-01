@@ -1,0 +1,88 @@
+/* =====================
+   WEEK SCHEDULE
+   ===================== */
+.week-sched {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 1.25rem;
+}
+
+.day-pill {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 4px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+}
+
+.day-pill.active {
+    border-color: var(--text);
+    background: var(--text);
+}
+
+.day-pill.active .dp-label {
+    color: #fff;
+}
+
+.day-pill.active .dp-short {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+/* Done checkmark on day pill */
+.day-pill.done::after {
+    content: '✓';
+    position: absolute;
+    top: -6px;
+    right: -4px;
+    background: var(--teal);
+    color: #fff;
+    font-size: 9px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 16px;
+}
+
+.dp-label {
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: var(--text);
+}
+
+.dp-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    margin: 0 auto 4px;
+}
+
+.dp-short {
+    font-size: 9px;
+    color: var(--muted);
+    line-height: 1.2;
+}
+
+.dot-teal {
+    background: var(--teal);
+}
+
+.dot-blue {
+    background: var(--blue);
+}
+
+.dot-coral {
+    background: var(--coral);
+}
+
+.dot-gray {
+    background: #bbb;
+}

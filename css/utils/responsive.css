@@ -1,0 +1,146 @@
+/* =====================
+   RESPONSIVE
+   ===================== */
+@media (max-width: 380px) {
+    .header-title {
+        font-size: 18px;
+    }
+
+    .cal-btn {
+        font-size: 0;
+        gap: 0;
+        padding: 8px 10px;
+    }
+
+    .cal-btn svg {
+        margin: 0;
+    }
+
+    .dp-short {
+        display: none;
+    }
+
+    .meal-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats {
+        gap: 6px;
+    }
+
+    .stat-val {
+        font-size: 17px;
+    }
+}
+
+/* =====================
+   ACCORDION — техніка вправ
+   ===================== */
+
+/* Підказка зверху картки */
+.video-hint {
+    font-size: 12px;
+    color: var(--teal);
+    margin-bottom: 6px;
+    padding: 0 2px;
+}
+
+/* Рядок вправи з відео — клікабельний */
+.ex-row.has-video {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+.ex-row.has-video:active {
+    opacity: 0.7;
+}
+
+/* Права частина рядка (сети + стрілка) */
+.ex-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+/* Стрілка-шеврон */
+.ex-arrow {
+    color: var(--muted);
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+/* Стрілка повертається коли відкрито */
+.ex-row.active .ex-arrow {
+    transform: rotate(180deg);
+}
+
+/* Підсвічування активного рядка */
+.ex-row.active {
+    color: var(--teal);
+}
+
+.ex-row.active .ex-name {
+    color: var(--teal);
+}
+
+.ex-row.active .ex-sets {
+    color: var(--teal);
+    opacity: 0.7;
+}
+
+/* Accordion контейнер */
+.ex-accordion {
+    display: none;
+    padding: 10px 0 8px;
+    border-bottom: 1px solid var(--border);
+    animation: fadeIn 0.2s ease;
+}
+
+.ex-accordion.open {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 16:9 обгортка для YouTube iframe */
+.yt-wrap {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    background: var(--gray-bg);
+    margin-bottom: 8px;
+}
+
+.yt-wrap iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Текстова підказка під відео */
+.ex-tip {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+    padding: 2px 2px 4px;
+    border-left: 2px solid var(--teal);
+    padding-left: 10px;
+    margin: 0;
+}

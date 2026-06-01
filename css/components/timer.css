@@ -1,0 +1,169 @@
+/* =====================
+   ТАЙМЕР ВІДПОЧИНКУ (v5)
+   ===================== */
+
+/* Кнопка запуску таймера (під вправами) */
+.rest-start-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 11px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--teal);
+    background: var(--teal-bg);
+    color: var(--teal-text);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.rest-start-btn:active {
+    opacity: 0.7;
+}
+
+/* Кнопки в акордеоні (відео + таймер) */
+.ex-acc-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+}
+
+.ex-timer-btn {
+    padding: 5px 12px;
+    font-size: 12px;
+    font-family: var(--font);
+    color: var(--teal-text);
+    background: var(--teal-bg);
+    border: 1px solid var(--teal);
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.ex-timer-btn:active {
+    opacity: 0.7;
+}
+
+/* Фіксований блок таймера внизу */
+.rest-timer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    display: none;
+    align-items: center;
+    gap: 16px;
+    z-index: 250;
+    transform: translateY(100%);
+    transition: transform 0.25s ease;
+}
+
+.rest-timer.active {
+    display: flex;
+    transform: translateY(0);
+}
+
+.rest-timer.finished {
+    background: var(--teal-bg);
+    animation: pulse 0.5s ease infinite alternate;
+}
+
+@keyframes pulse {
+    from {
+        background: var(--teal-bg);
+    }
+
+    to {
+        background: var(--teal);
+    }
+}
+
+/* Круговий прогрес */
+.rt-circle-wrap {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+}
+
+.rt-svg {
+    width: 60px;
+    height: 60px;
+    transform: rotate(-90deg);
+}
+
+.rt-track {
+    fill: none;
+    stroke: var(--border);
+    stroke-width: 4;
+}
+
+.rt-progress {
+    fill: none;
+    stroke: var(--teal);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 163.36;
+    /* 2πr, r=26 */
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear;
+}
+
+.rt-time {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+
+.rest-timer.finished .rt-time {
+    color: #fff;
+}
+
+/* Контроли */
+.rt-controls {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+    justify-content: space-between;
+}
+
+.rt-btn {
+    flex: 1;
+    padding: 10px 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.rt-btn:active {
+    opacity: 0.6;
+}
+
+.rt-btn-main {
+    background: var(--teal);
+    color: #fff;
+    border-color: var(--teal);
+    font-size: 16px;
+}
+
+.rt-btn-close {
+    flex: 0 0 auto;
+    width: 42px;
+    color: var(--muted);
+}

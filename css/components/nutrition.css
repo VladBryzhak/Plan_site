@@ -1,0 +1,107 @@
+/* =====================
+   NUTRITION
+   ===================== */
+.note {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.65rem 1rem;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    transition: background var(--transition);
+}
+
+.week-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1rem;
+}
+
+.week-nav-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.wk-btn {
+    padding: 5px 16px;
+    font-size: 13px;
+    font-family: var(--font);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--card);
+    color: var(--muted);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.wk-btn.active {
+    background: var(--text);
+    color: var(--card);
+    border-color: var(--text);
+}
+
+.meal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.meal-card {
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 0.7rem 0.85rem;
+    transition: background var(--transition);
+}
+
+.meal-time {
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 2px;
+}
+
+.meal-name {
+    font-weight: 500;
+    font-size: 13px;
+    margin-bottom: 2px;
+    color: var(--text);
+}
+
+.meal-desc {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+/* =====================
+   TIPS
+   ===================== */
+.tip-section-title {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+}
+
+.tip-row {
+    display: flex;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text);
+}
+
+.tip-row:last-child {
+    border-bottom: none;
+}
+
+.tip-icon {
+    color: var(--muted);
+    flex-shrink: 0;
+    font-size: 16px;
+    margin-top: 1px;
+}

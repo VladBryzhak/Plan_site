@@ -1,0 +1,137 @@
+/* =====================
+   MODAL
+   ===================== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 200;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.modal-overlay.open {
+    display: flex;
+}
+
+.modal {
+    background: var(--card);
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 1.5rem 1.25rem 2rem;
+    width: 100%;
+    max-width: 480px;
+    transition: background var(--transition);
+}
+
+.modal-title {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+}
+
+.modal-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+    line-height: 1.5;
+}
+
+.modal-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--muted);
+}
+
+.date-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font);
+    font-size: 15px;
+    background: var(--bg);
+    color: var(--text);
+    margin-bottom: 1rem;
+    -webkit-appearance: none;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-primary {
+    flex: 1;
+    padding: 12px;
+    background: var(--teal);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: var(--font);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    padding: 12px 20px;
+    background: var(--bg);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font);
+    font-size: 15px;
+    cursor: pointer;
+}
+
+/* =====================
+   TOAST
+   ===================== */
+.toast {
+    display: none;
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text);
+    color: var(--card);
+    padding: 10px 20px;
+    border-radius: 100px;
+    font-size: 13px;
+    z-index: 300;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.toast.show {
+    display: block;
+}
+
+/* =====================
+   OFFLINE BANNER
+   ===================== */
+.offline-banner {
+    display: none;
+    background: #FAEEDA;
+    color: #854F0B;
+    text-align: center;
+    font-size: 13px;
+    padding: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+}
+
+body.dark .offline-banner {
+    background: #2e2200;
+    color: #FAC775;
+}
+
+.offline-banner.show {
+    display: block;
+}

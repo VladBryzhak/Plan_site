@@ -1,0 +1,49 @@
+/* =====================
+   VARIABLES — LIGHT THEME
+   ===================== */
+:root {
+    --bg: #f5f4f0;
+    --card: #ffffff;
+    --text: #1a1a18;
+    --muted: #7a7a74;
+    --border: rgba(0, 0, 0, 0.08);
+    --border-strong: rgba(0, 0, 0, 0.18);
+    --teal: #1D9E75;
+    --teal-bg: #E1F5EE;
+    --teal-text: #085041;
+    --blue: #185FA5;
+    --blue-bg: #E6F1FB;
+    --coral: #D85A30;
+    --coral-bg: #FAECE7;
+    --coral-text: #712B13;
+    --gray-bg: #F1EFE8;
+    --done-bg: #E1F5EE;
+    --done-border: #1D9E75;
+    --done-text: #085041;
+    --radius: 14px;
+    --radius-sm: 8px;
+    --font: 'DM Sans', sans-serif;
+    --font-serif: 'DM Serif Display', serif;
+    --transition: 0.2s ease;
+}
+
+/* =====================
+   DARK THEME
+   ===================== */
+body.dark {
+    --bg: #141413;
+    --card: #1e1e1c;
+    --text: #f0efea;
+    --muted: #8a8a84;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.18);
+    --teal-bg: #0a2e22;
+    --teal-text: #5DCAA5;
+    --blue-bg: #0c2340;
+    --coral-bg: #2e1208;
+    --coral-text: #F0997B;
+    --gray-bg: #252523;
+    --done-bg: #0a2e22;
+    --done-border: #1D9E75;
+    --done-text: #5DCAA5;
+}
