@@ -5,17 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Мій план тренувань</title>
-
-    <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1D9E75" id="theme-color-meta">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Тренування">
     <link rel="apple-touch-icon" href="icons/main-icon-192.png">
-
-    <!-- Styles -->
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="./css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Serif+Display&display=swap"
@@ -24,16 +20,22 @@
 
 <body>
 
-    <!-- HEADER -->
     <header class="header">
         <div class="header-top">
             <div>
                 <h1 class="header-title">Мій план</h1>
-                <p class="header-sub">90 → 82 кг · ~12 тижнів</p>
+                <p class="header-sub">Персональний трекер</p>
             </div>
             <div class="header-actions">
-                <!-- Dark theme toggle -->
-                <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()" aria-label="Змінити тему">
+                <button class="icon-btn" onclick="openSettings()" aria-label="Налаштування">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3" />
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                    </svg>
+                </button>
+                <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()" aria-label="Тема">
                     <svg id="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
                         <circle cx="12" cy="12" r="5" />
@@ -51,7 +53,6 @@
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
                     </svg>
                 </button>
-                <!-- Calendar button -->
                 <button class="cal-btn" onclick="openCalModal()">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -60,7 +61,6 @@
                         <line x1="8" y1="2" x2="8" y2="6" />
                         <line x1="3" y1="10" x2="21" y2="10" />
                     </svg>
-                    До календаря
                 </button>
             </div>
         </div>
@@ -71,32 +71,42 @@
         </nav>
     </header>
 
-    <!-- MAIN -->
     <main class="content">
 
-        <!-- WORKOUT -->
         <section id="sec-workout" class="section active">
             <div class="stats">
-                <div class="stat">
-                    <div class="stat-val">90 кг</div>
-                    <div class="stat-lbl">Зараз</div>
+                <div class="stat stat-editable" onclick="editStat('current')">
+                    <div class="stat-val" id="stat-current">90 кг</div>
+                    <div class="stat-lbl">Зараз ✎</div>
+                </div>
+                <div class="stat stat-editable" onclick="editStat('target')">
+                    <div class="stat-val" id="stat-target">82 кг</div>
+                    <div class="stat-lbl">Ціль ✎</div>
+                </div>
+                <div class="stat stat-editable" onclick="openSettings()">
+                    <div class="stat-val stat-goal"><span id="stat-goal-icon">🔥</span></div>
+                    <div class="stat-lbl" id="stat-goal-label">Схуднення</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-val">82 кг</div>
-                    <div class="stat-lbl">Ціль</div>
+                    <div class="stat-val" id="stat-cal">2414</div>
+                    <div class="stat-lbl">ккал/день</div>
                 </div>
-                <div class="stat" id="stat-done">
+                <div class="stat">
                     <div class="stat-val" id="stat-done-val">0</div>
                     <div class="stat-lbl">Виконано</div>
                 </div>
             </div>
+
+            <div class="apply-btn-wrap" id="apply-btn-wrap">
+                <button class="apply-btn" onclick="applyChanges()">✓ Застосувати план</button>
+            </div>
+
             <div class="week-sched" id="week-sched"></div>
             <div id="workout-content"></div>
         </section>
 
-        <!-- NUTRITION -->
         <section id="sec-nutrition" class="section">
-            <p class="note">Без яєць · ~2000–2100 ккал/день · Білок 155–170 г · 5 прийомів їжі</p>
+            <div class="macro-bar" id="macro-bar"></div>
             <div class="week-nav">
                 <span class="week-nav-label">Тиждень:</span>
                 <button class="wk-btn active" id="btn-w1" onclick="showWeek(1)">1</button>
@@ -105,57 +115,105 @@
             <div id="nutrition-content"></div>
         </section>
 
-        <!-- TIPS -->
         <section id="sec-tips" class="section">
             <div class="card">
                 <h2 class="tip-section-title">Тренування</h2>
-                <div class="tip-row"><span class="tip-icon">⏱</span><span>Розминка 5–7 хв перед кожним тренуванням —
-                        суглобова гімнастика + легка кардіо</span></div>
-                <div class="tip-row"><span class="tip-icon">🏋</span><span>Вага гантелей: останні 2 повтори мають бути
-                        важкими, але без втрати техніки</span></div>
-                <div class="tip-row"><span class="tip-icon">🏃</span><span>Пробіжки у розмовному темпі — 20–30 хв
-                        достатньо для жироспалювання</span></div>
-                <div class="tip-row"><span class="tip-icon">⏸</span><span>Відпочинок між підходами 60–90 сек — не
-                        більше, щоб пульс залишався підвищеним</span></div>
+                <div class="tip-row"><span class="tip-icon">⏱</span><span>Розминка 5–7 хв перед кожним
+                        тренуванням</span></div>
+                <div class="tip-row"><span class="tip-icon">🏋</span><span>Вага: останні 2 повтори важкі, але без втрати
+                        техніки</span></div>
+                <div class="tip-row"><span class="tip-icon">🏃</span><span>Пробіжки у розмовному темпі — 20–30 хв</span>
+                </div>
                 <div class="tip-row"><span class="tip-icon">📈</span><span>Кожні 2 тижні збільшуй вагу на 1–2 кг або
-                        додавай 1–2 повтори в підході</span></div>
-                <div class="tip-row"><span class="tip-icon">🤸</span><span>Розтяжка 5–10 хв після тренування — знижує
-                        болючість м'язів наступного дня</span></div>
+                        повтори</span></div>
+                <div class="tip-row"><span class="tip-icon">🤸</span><span>Розтяжка 5–10 хв після тренування</span>
+                </div>
             </div>
             <div class="card">
                 <h2 class="tip-section-title">Харчування</h2>
-                <div class="tip-row"><span class="tip-icon">💧</span><span>Вода 2.5–3 л на день — в дні тренувань
-                        обов'язково, навіть якщо не хочеться</span></div>
-                <div class="tip-row"><span class="tip-icon">🕐</span><span>Їж кожні 3–4 години, не пропускай прийоми —
-                        це запобігає переїданню ввечері</span></div>
-                <div class="tip-row"><span class="tip-icon">🥩</span><span>Білок (курка, риба, сир, йогурт) — в кожному
-                        прийомі їжі без винятку</span></div>
-                <div class="tip-row"><span class="tip-icon">🌙</span><span>Вечеря: тільки білок + овочі, без каш і хліба
-                        після 18:00</span></div>
-                <div class="tip-row"><span class="tip-icon">🚫</span><span>Виключи цукор, солодкі напої, фастфуд і
-                        алкоголь на весь період схуднення</span></div>
-                <div class="tip-row"><span class="tip-icon">⚖️</span><span>Зважуйся раз на тиждень вранці натще — не
-                        частіше, щоб не демотивуватись</span></div>
+                <div class="tip-row"><span class="tip-icon">💧</span><span>Вода 2.5–3 л на день</span></div>
+                <div class="tip-row"><span class="tip-icon">🕐</span><span>Їж кожні 3–4 години, не пропускай
+                        прийоми</span></div>
+                <div class="tip-row"><span class="tip-icon">🥩</span><span>Білок у кожному прийомі їжі без
+                        винятку</span></div>
+                <div class="tip-row"><span class="tip-icon">⚖️</span><span>Зважуйся раз на тиждень вранці натще</span>
+                </div>
             </div>
             <div class="card">
                 <h2 class="tip-section-title">Відновлення</h2>
-                <div class="tip-row"><span class="tip-icon">😴</span><span>Сон 7–8 годин — найважливіший фактор: без сну
-                        жир горить повільно, м'язи не ростуть</span></div>
-                <div class="tip-row"><span class="tip-icon">🚶</span><span>Якщо дуже болять м'язи — легка прогулянка
-                        20–30 хв замість відпочинку лежачи</span></div>
-                <div class="tip-row"><span class="tip-icon">❤️</span><span>Слухай тіло: різкий біль у суглобах — сигнал
-                        зупинитись і перевірити техніку</span></div>
+                <div class="tip-row"><span class="tip-icon">😴</span><span>Сон 7–8 годин — найважливіший фактор</span>
+                </div>
+                <div class="tip-row"><span class="tip-icon">🚶</span><span>Болять м'язи — легка прогулянка замість
+                        лежання</span></div>
+                <div class="tip-row"><span class="tip-icon">❤️</span><span>Різкий біль у суглобах — зупинись і перевір
+                        техніку</span></div>
             </div>
         </section>
 
     </main>
 
+    <!-- SETTINGS MODAL -->
+    <div class="modal-overlay" id="settings-modal" onclick="closeSettingsOverlay(event)">
+        <div class="modal">
+            <h2 class="modal-title">⚙️ Профіль</h2>
+            <div class="settings-row">
+                <div class="settings-field">
+                    <label class="modal-label" for="set-height">Зріст (см)</label>
+                    <input type="number" class="date-input" id="set-height" min="120" max="230">
+                </div>
+                <div class="settings-field">
+                    <label class="modal-label" for="set-age">Вік</label>
+                    <input type="number" class="date-input" id="set-age" min="14" max="90">
+                </div>
+            </div>
+
+            <label class="modal-label">Стать</label>
+            <div class="radio-group">
+                <label class="radio-pill"><input type="radio" name="sex" value="male"><span>Чоловік</span></label>
+                <label class="radio-pill"><input type="radio" name="sex" value="female"><span>Жінка</span></label>
+            </div>
+
+            <label class="modal-label">Рівень активності</label>
+            <div class="radio-group radio-group-col">
+                <label class="radio-pill"><input type="radio" name="activity" value="sedentary"><span>Сидячий (мало
+                        руху)</span></label>
+                <label class="radio-pill"><input type="radio" name="activity" value="moderate"><span>Помірний (2–4
+                        трен/тиж)</span></label>
+                <label class="radio-pill"><input type="radio" name="activity" value="active"><span>Активний (5+
+                        трен/тиж)</span></label>
+            </div>
+
+            <label class="modal-label">Ціль</label>
+            <div class="goal-cards" id="goal-cards"></div>
+
+            <div class="settings-divider"></div>
+
+            <div class="notify-header">
+                <label class="modal-label" style="margin:0">🔔 Нагадування про тренування</label>
+                <label class="switch">
+                    <input type="checkbox" id="notify-toggle" onchange="onNotifyToggle()">
+                    <span class="switch-slider"></span>
+                </label>
+            </div>
+            <div class="notify-time-wrap" id="notify-time-wrap" style="display:none">
+                <label class="modal-label" for="notify-time">Час тренування (нагадаю за 20 хв)</label>
+                <input type="time" class="date-input" id="notify-time" value="18:00">
+                <button class="test-notify-btn" onclick="testNotification()">Перевірити сповіщення</button>
+            </div>
+            <p class="notify-status" id="notify-status"></p>
+
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeSettings()">Скасувати</button>
+                <button class="btn-primary" onclick="saveSettings()">Зберегти</button>
+            </div>
+        </div>
+    </div>
+
     <!-- CALENDAR MODAL -->
     <div class="modal-overlay" id="cal-modal" onclick="closeIfOverlay(event)">
         <div class="modal">
             <h2 class="modal-title">Додати до календаря</h2>
-            <p class="modal-sub">Вкажи дату першого понеділка — я створю .ics файл з тренуваннями на 12 тижнів для Apple
-                Calendar.</p>
+            <p class="modal-sub">Вкажи дату першого понеділка — створю .ics з тренуваннями на 12 тижнів.</p>
             <label class="modal-label" for="start-date">Дата початку (понеділок)</label>
             <input type="date" class="date-input" id="start-date">
             <div class="modal-actions">
@@ -167,8 +225,29 @@
 
     <div class="toast" id="toast"></div>
 
-    <script src="./js/data.js"></script>
-    <script src="./js/app.js"></script>
+    <!-- REST TIMER (фіксований блок внизу) -->
+    <div class="rest-timer" id="rest-timer">
+        <div class="rt-circle-wrap">
+            <svg class="rt-svg" viewBox="0 0 60 60">
+                <circle class="rt-track" cx="30" cy="30" r="26"></circle>
+                <circle class="rt-progress" id="rt-progress" cx="30" cy="30" r="26"></circle>
+            </svg>
+            <span class="rt-time" id="rt-time">0:60</span>
+        </div>
+        <div class="rt-controls">
+            <button class="rt-btn" onclick="RestTimer.addTime(-15)" aria-label="−15 секунд">−15</button>
+            <button class="rt-btn rt-btn-main" id="rt-playpause" onclick="RestTimer.togglePause()"
+                aria-label="Пауза">⏸</button>
+            <button class="rt-btn" onclick="RestTimer.addTime(15)" aria-label="+15 секунд">+15</button>
+            <button class="rt-btn" onclick="RestTimer.reset()" aria-label="Скинути">↻</button>
+            <button class="rt-btn rt-btn-close" onclick="RestTimer.close()" aria-label="Закрити">✕</button>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/timer.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/app.js"></script>
 </body>
 
 </html>

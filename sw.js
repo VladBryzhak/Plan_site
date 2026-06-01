@@ -1,14 +1,16 @@
 /* =====================
-   sw.js — Service Worker v3
+   sw.js — Service Worker v5
    ===================== */
 
-const CACHE_NAME = 'fitness-plan-v3';
+const CACHE_NAME = 'fitness-plan-v5';
 
 const FILES_TO_CACHE = [
   './',
   './index.html',
   './css/styles.css',
   './js/data.js',
+  './js/timer.js',
+  './js/notifications.js',
   './js/app.js',
   './manifest.json',
   './icons/main-icon-192.png',
@@ -43,7 +45,7 @@ self.addEventListener('fetch', event => {
     event.request.url.includes('yt3.ggpht.com')
   ) return;
 
-  /* Пропускаємо Google Fonts (вони мають власний кеш) */
+  /* Пропускаємо Google Fonts */
   if (event.request.url.includes('fonts.googleapis.com') ||
       event.request.url.includes('fonts.gstatic.com')) return;
 
@@ -61,6 +63,19 @@ self.addEventListener('fetch', event => {
           return caches.match('./index.html');
         }
       });
+    })
+  );
+});
+
+/* ---- Клік по нагадуванню — відкрити додаток ---- */
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+      for (const client of list) {
+        if ('focus' in client) return client.focus();
+      }
+      if (clients.openWindow) return clients.openWindow('./');
     })
   );
 });
