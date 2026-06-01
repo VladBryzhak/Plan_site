@@ -7,7 +7,7 @@ const CACHE_NAME = 'fitness-plan-v3';
 const FILES_TO_CACHE = [
   './',
   './index.html',
-  './css/style.css',
+  './css/styles.css',
   './js/data.js',
   './js/app.js',
   './manifest.json',

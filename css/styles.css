@@ -257,7 +257,7 @@ body {
 
 .day-pill.active {
     border-color: var(--text);
-    background: var(--text);
+    background: lightblue;
 }
 
 .day-pill.active .dp-label {
