@@ -186,3 +186,4 @@ export async function saveSettings() {
   renderStats();
   showToast('Налаштування збережено — натисни «Застосувати»');
 }
+
