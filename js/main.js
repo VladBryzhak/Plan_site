@@ -1,7 +1,8 @@
 /* =====================
    main.js — точка входу додатку
-   Імпортує всі модулі, ініціалізує і прокидає глобальні функції
-   для HTML onclick-хендлерів
+   Імпортує всі модулі, ініціалізує додаток,
+   підключає всі слухачі подій через addEventListener.
+   Жодних window.* і onclick у HTML.
    ===================== */
 
 import { loadProfile, saveProfile }  from './core/storage.js';
@@ -13,7 +14,7 @@ import { GOALS }                     from './data/profile.js';
 import { notifySchedule }            from './notifications.js';
 
 import { renderStats, editStat, showApplyButton,
-         openSettings, closeSettings, closeSettingsOverlay,
+         openSettings, closeSettings,
          renderGoalCards, selectGoal,
          saveSettings, onNotifyToggle, updateNotifyUI, testNotification }
   from './features/profile.js';
@@ -25,7 +26,7 @@ import { renderWorkout, renderSched, selectDay,
 
 import { renderNutrition, renderMacroBar, showWeek } from './features/nutrition.js';
 
-import { openCalModal, closeCalModal, closeIfOverlay, generateICS } from './features/calendar.js';
+import { openCalModal, closeCalModal, generateICS } from './features/calendar.js';
 
 import { timerTogglePause, timerAddTime, timerReset, timerClose } from './timer.js';
 
@@ -49,11 +50,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (state.profile.notifyEnabled && state.profile.notifyTime) {
     notifySchedule(state.profile.notifyTime);
   }
+
+  initEventListeners();
 });
 
 /* =====================
    APPLY CHANGES
-   Координує перерахунок після змін профілю
    ===================== */
 function applyChanges() {
   saveProfile(state.profile);
@@ -75,43 +77,117 @@ function applyChanges() {
 }
 
 /* =====================
-   ГЛОБАЛЬНІ ФУНКЦІЇ
-   Прокидаємо до window для HTML onclick-атрибутів
+   СЛУХАЧІ ПОДІЙ
+   Усі обробники подій в одному місці.
+   Статичні елементи — прямі listener'и.
+   Динамічний контент — делегування на контейнер.
    ===================== */
-Object.assign(window, {
-  /* Тема */
-  toggleTheme,
+function initEventListeners() {
 
-  /* Вкладки */
-  switchTab,
+  /* ---- Хедер ---- */
+  document.getElementById('btn-settings')
+    ?.addEventListener('click', openSettings);
 
-  /* Профіль і статистика */
-  editStat,
-  applyChanges,
-  openSettings,
-  closeSettings,
-  closeSettingsOverlay,
-  selectGoal,
-  saveSettings,
-  onNotifyToggle,
-  testNotification,
+  document.getElementById('theme-toggle')
+    ?.addEventListener('click', toggleTheme);
 
-  /* Тренування */
-  selectDay,
-  toggleDone,
-  toggleExercise,
-  reloadVideo,
-  startRestTimer,
+  document.getElementById('btn-cal')
+    ?.addEventListener('click', openCalModal);
 
-  /* Харчування */
-  showWeek,
+  /* ---- Вкладки: делегування на <nav class="tabs"> ---- */
+  document.getElementById('tabs-nav')
+    ?.addEventListener('click', e => {
+      const btn = e.target.closest('[data-tab]');
+      if (btn) switchTab(btn.dataset.tab);
+    });
 
-  /* Календар */
-  openCalModal,
-  closeCalModal,
-  closeIfOverlay,
-  generateICS,
+  /* ---- Статистика: делегування на .stats ---- */
+  document.getElementById('stats-bar')
+    ?.addEventListener('click', e => {
+      const el = e.target.closest('[data-action]');
+      if (!el) return;
+      if (el.dataset.action === 'edit-stat')    editStat(el.dataset.stat);
+      if (el.dataset.action === 'open-settings') openSettings();
+    });
 
-  /* Таймер */
-  RestTimer: { togglePause: timerTogglePause, addTime: timerAddTime, reset: timerReset, close: timerClose },
-});
+  /* ---- Кнопка «Застосувати» ---- */
+  document.getElementById('btn-apply')
+    ?.addEventListener('click', applyChanges);
+
+  /* ---- Модалка налаштувань ---- */
+  document.getElementById('settings-modal')
+    ?.addEventListener('click', e => {
+      if (e.target === e.currentTarget) closeSettings();
+    });
+
+  document.getElementById('notify-toggle')
+    ?.addEventListener('change', onNotifyToggle);
+
+  document.getElementById('btn-close-settings')
+    ?.addEventListener('click', closeSettings);
+
+  document.getElementById('btn-save-settings')
+    ?.addEventListener('click', saveSettings);
+
+  document.getElementById('btn-test-notify')
+    ?.addEventListener('click', testNotification);
+
+  /* ---- Модалка календаря ---- */
+  document.getElementById('cal-modal')
+    ?.addEventListener('click', e => {
+      if (e.target === e.currentTarget) closeCalModal();
+    });
+
+  document.getElementById('btn-close-cal')
+    ?.addEventListener('click', closeCalModal);
+
+  document.getElementById('btn-generate-ics')
+    ?.addEventListener('click', generateICS);
+
+  /* ---- Харчування: тижні ---- */
+  document.getElementById('btn-w1')
+    ?.addEventListener('click', () => showWeek(1));
+
+  document.getElementById('btn-w2')
+    ?.addEventListener('click', () => showWeek(2));
+
+  /* ---- Таймер: делегування на #rest-timer ---- */
+  document.getElementById('rest-timer')
+    ?.addEventListener('click', e => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn) return;
+      switch (btn.dataset.action) {
+        case 'timer-pause': timerTogglePause();                   break;
+        case 'timer-add':   timerAddTime(Number(btn.dataset.sec)); break;
+        case 'timer-reset': timerReset();                         break;
+        case 'timer-close': timerClose();                         break;
+      }
+    });
+
+  /* ---- Розклад тижня: делегування на #week-sched ---- */
+  document.getElementById('week-sched')
+    ?.addEventListener('click', e => {
+      const pill = e.target.closest('[data-action="select-day"]');
+      if (pill) selectDay(Number(pill.dataset.day));
+    });
+
+  /* ---- Контент тренування: делегування на #workout-content ---- */
+  document.getElementById('workout-content')
+    ?.addEventListener('click', e => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn) return;
+      switch (btn.dataset.action) {
+        case 'toggle-exercise': toggleExercise(Number(btn.dataset.ex)); break;
+        case 'reload-video':    reloadVideo(Number(btn.dataset.ex));    break;
+        case 'start-timer':     startRestTimer();                       break;
+        case 'toggle-done':     toggleDone(Number(btn.dataset.day));    break;
+      }
+    });
+
+  /* ---- Картки цілей: делегування на #goal-cards ---- */
+  document.getElementById('goal-cards')
+    ?.addEventListener('click', e => {
+      const card = e.target.closest('[data-action="select-goal"]');
+      if (card) selectGoal(card.dataset.goal);
+    });
+}
