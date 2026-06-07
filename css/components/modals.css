@@ -9,6 +9,7 @@
     z-index: 200;
     align-items: flex-end;
     justify-content: center;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
 }
 
 .modal-overlay.open {
@@ -17,10 +18,14 @@
 
 .modal {
     background: var(--card);
-    border-radius: var(--radius) var(--radius) 0 0;
+    border-radius: var(--radius);
     padding: 1.5rem 1.25rem 2rem;
-    width: 100%;
+    width: calc(100% - 2rem);
     max-width: 480px;
+    max-height: 90vh;
+    max-height: 90svh; /* враховує UI браузера на мобільному */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* плавний скрол на iOS */
     transition: background var(--transition);
 }
 
