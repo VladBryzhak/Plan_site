@@ -30,7 +30,7 @@ export function renderSched() {
   container.innerHTML = DAYS_META.map((d, i) => {
     const cls = ['day-pill', i === state.activeDay ? 'active' : '', isDone(i) ? 'done' : '']
       .filter(Boolean).join(' ');
-    return `<div class="${cls}" onclick="window.selectDay(${i})">
+    return `<div class="${cls}" data-action="select-day" data-day="${i}">
       <div class="dp-label">${d.label}</div>
       <div class="dp-dot dot-${d.type}"></div>
       <div class="dp-short">${d.short}</div>
@@ -93,11 +93,11 @@ export function renderWorkout() {
   const container = document.getElementById('workout-content');
   if (!container) return;
 
-  const w         = WORKOUTS[state.activeDay];
-  const done      = isDone(state.activeDay);
-  const isRest    = w.type === 'gray';
-  const setsInfo  = calcSets(state.profile);
-  const restSec   = getRestSeconds(state.profile);
+  const w        = WORKOUTS[state.activeDay];
+  const done     = isDone(state.activeDay);
+  const isRest   = w.type === 'gray';
+  const setsInfo = calcSets(state.profile);
+  const restSec  = getRestSeconds(state.profile);
 
   const iconMap = { teal: 'icon-teal', blue: 'icon-blue', coral: 'icon-coral', gray: 'icon-gray' };
 
@@ -118,6 +118,11 @@ export function renderWorkout() {
     const setsText = e.fixedSets ?? `${setsInfo.sets} × ${setsInfo.reps}`;
     const videoId  = isOpen && hasVideo ? pickRandomVideo(e.videos) : null;
 
+    /* data-action замість inline onclick */
+    const rowAction = hasVideo
+      ? `data-action="toggle-exercise" data-ex="${i}"`
+      : '';
+
     const acc = isOpen && videoId ? `
       <div class="ex-accordion open" id="acc-${i}">
         <div class="yt-wrap">
@@ -128,13 +133,13 @@ export function renderWorkout() {
         </div>
         ${e.tip ? `<p class="ex-tip"><span class="ex-tip-icon">💡</span>${e.tip}</p>` : ''}
         <div class="ex-acc-actions">
-          <button class="ex-reload-btn" onclick="event.stopPropagation(); window.reloadVideo(${i})">↻ Інше відео</button>
-          <button class="ex-timer-btn"  onclick="event.stopPropagation(); window.startRestTimer()">⏱ Старт таймер</button>
+          <button class="ex-reload-btn" data-action="reload-video" data-ex="${i}">↻ Інше відео</button>
+          <button class="ex-timer-btn"  data-action="start-timer">⏱ Старт таймер</button>
         </div>
       </div>` : `<div class="ex-accordion" id="acc-${i}"></div>`;
 
     return `
-      <div class="${rowCls}" onclick="${hasVideo ? `window.toggleExercise(${i})` : ''}">
+      <div class="${rowCls}" ${rowAction}>
         <span class="ex-name">${e.name}</span>
         <div class="ex-right">
           <span class="ex-sets">${setsText}</span>
@@ -144,12 +149,12 @@ export function renderWorkout() {
   }).join('');
 
   const timerBtn = (!isRest && !w.cardio) ? `
-    <button class="rest-start-btn" onclick="window.startRestTimer()">
+    <button class="rest-start-btn" data-action="start-timer">
       ⏱ Таймер відпочинку (${restSec} сек)
     </button>` : '';
 
   const doneBtn = isRest ? '' : `
-    <button class="done-btn ${done ? 'marked' : ''}" onclick="window.toggleDone(${state.activeDay})">
+    <button class="done-btn ${done ? 'marked' : ''}" data-action="toggle-done" data-day="${state.activeDay}">
       ${done ? '<span>✓</span> Виконано — натисни щоб скасувати' : '<span>○</span> Відмітити як виконане'}
     </button>`;
 

@@ -1,130 +1,130 @@
-/* ========================
-   sw.js — Сервісний працівник
+/* =====================
+   sw.js — Service Worker
    Щоб оновити кеш на всіх пристроях після деплою —
-   змініть тільки CACHE_VERSION нижче.
-   ======================= */
+   змінити тільки CACHE_VERSION нижче.
+   ===================== */
 
-const CACHE_VERSION = 'v7';
-const CACHE_NAME = `фітнес-план-${CACHE_VERSION}`;
+const CACHE_VERSION  = 'v7';
+const CACHE_NAME     = `fitness-plan-${CACHE_VERSION}`;
 
-const ФАЙЛИ_У_КЕШ = [
+const FILES_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
-  './іконки/іконка-192.png',
-  './іконки/іконка-512.png',
-  /* CSS — база */
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  /* CSS — base */
   './css/base/variables.css',
   './css/base/reset.css',
   './css/base/layout.css',
-  /* CSS — компоненти */
+  /* CSS — components */
   './css/components/stats.css',
   './css/components/workout.css',
   './css/components/cards.css',
   './css/components/nutrition.css',
   './css/components/modals.css',
   './css/components/accordion.css',
-  './css/компоненти/профіль.css',
+  './css/components/profile.css',
   './css/components/timer.css',
   './css/components/forms.css',
-  /* CSS — утиліти */
+  /* CSS — utils */
   './css/utils/responsive.css',
-  /* JS — дані */
+  /* JS — data */
   './js/data/profile.js',
   './js/data/workouts.js',
   './js/data/nutrition.js',
-  /* JS — ядро ​​*/
+  /* JS — core */
   './js/core/state.js',
   './js/core/calc.js',
   './js/core/storage.js',
-  /* JS — утиліти */
+  /* JS — utils */
   './js/utils/theme.js',
   './js/utils/ui.js',
-  /* JS — функції */
+  /* JS — features */
   './js/features/workout.js',
   './js/features/nutrition.js',
   './js/features/profile.js',
   './js/features/calendar.js',
-  /* JS — автономний */
+  /* JS — standalone */
   './js/timer.js',
   './js/notifications.js',
   './js/main.js',
 ];
 
 const SKIP_CACHE = [
-  «youtube.com», «youtu.be», «ytimg.com», «yt3.ggpht.com»,
+  'youtube.com', 'youtu.be', 'ytimg.com', 'yt3.ggpht.com',
   'fonts.googleapis.com', 'fonts.gstatic.com',
 ];
 
-/* ---- Встановити: кешуємо всі файли ---- */
-self.addEventListener('встановити', подія => {
-  подія.waitUntil(
-    caches.open(ІМ'Я_КЕША)
-      .then(кеш => кеш.addAll(ФАЙЛИ_ТО_КЕШ))
-      .catch(err => console.warn('Помилка кешу встановлення [SW]:', err))
+/* ---- Install: кешуємо всі файли ---- */
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(FILES_TO_CACHE))
+      .catch(err => console.warn('[SW] install cache error:', err))
   );
   self.skipWaiting();
 });
 
-/* ---- Активація: видаляємо старі версії кешу ---- */
-self.addEventListener('активувати', подія => {
-  подія.waitUntil(
-    кеші.ключі().тоді(ключі =>
-      Promise.all(keys.filter(k => k !== ІМ'Я_КЕША).map(k => caches.delete(k)))
+/* ---- Activate: видаляємо старі версії кешу ---- */
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
     )
   );
   self.clients.claim();
 });
 
-/* ---- Отримати ---- */
-self.addEventListener('fetch', подія => {
-  якщо (event.request.method !== 'GET') повернути;
-  якщо (event.request.url.startsWith('розширення chrome://')) повернути;
-  якщо (SKIP_CACHE.some(s => event.request.url.includes(s))) повернути;
+/* ---- Fetch ---- */
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+  if (event.request.url.startsWith('chrome-extension://')) return;
+  if (SKIP_CACHE.some(s => event.request.url.includes(s))) return;
 
-  /* Навігаційні запити (HTML) — спочатку мережа для оновлення
-     деплою відразу доходили до користувача без ручного бампу */
-  якщо (event.request.mode === 'навігація') {
-    подія.respondWith(
-      fetch(подія.запит)
-        .then(відповідь => {
-          якщо (відповідь?.статус === 200) {
-            caches.open(ІМ'Я_КЕША)
-              .then(кеш => кеш.пут(подія.запит, відповідь.клон()));
+  /* Навігаційні запити (HTML) — спочатку мережа, щоб оновлення
+     деплою одразу доходили до користувача без ручного бампу */
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          if (response?.status === 200) {
+            caches.open(CACHE_NAME)
+              .then(cache => cache.put(event.request, response.clone()));
           }
-          відповідь на зворотній зв'язок;
+          return response;
         })
         .catch(() => caches.match('./index.html'))
     );
-    повернення;
+    return;
   }
 
-  /* Усі інші ресурси (JS, CSS, іконки) — спочатку кеш */
-  подія.respondWith(
-    caches.match(event.request).then(кешований => {
-      якщо (кешовано) повернути кешовано;
-      повернути fetch(event.request).then(response => {
-        якщо (відповідь?.статус === 200) {
-          caches.open(ІМ'Я_КЕША)
-            .then(кеш => кеш.пут(подія.запит, відповідь.клон()));
+  /* Всі інші ресурси (JS, CSS, іконки) — cache-first */
+  event.respondWith(
+    caches.match(event.request).then(cached => {
+      if (cached) return cached;
+      return fetch(event.request).then(response => {
+        if (response?.status === 200) {
+          caches.open(CACHE_NAME)
+            .then(cache => cache.put(event.request, response.clone()));
         }
-        відповідь на зворотній зв'язок;
+        return response;
       }).catch(() => {
-        якщо (event.request.destination === 'документ') {
-          повернути кеші.match('./index.html');
+        if (event.request.destination === 'document') {
+          return caches.match('./index.html');
         }
       });
     })
   );
 });
 
-/* ---- Клік сповіщення ---- */
-self.addEventListener('сповіщення про клік', подія => {
-  подія.сповіщення.закрити();
-  подія.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontroled: true }).then(список => {
-      for (const c зі списку) if ('focus' in c) return c.focus();
-      якщо (клієнти.openWindow) повернути клієнти.openWindow('./');
+/* ---- Notification click ---- */
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+      for (const c of list) if ('focus' in c) return c.focus();
+      if (clients.openWindow) return clients.openWindow('./');
     })
   );
 });

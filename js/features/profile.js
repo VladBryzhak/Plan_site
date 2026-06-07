@@ -92,16 +92,12 @@ export function closeSettings() {
   document.getElementById('settings-modal')?.classList.remove('open');
 }
 
-export function closeSettingsOverlay(e) {
-  if (e.target === document.getElementById('settings-modal')) closeSettings();
-}
-
 export function renderGoalCards() {
   const wrap = document.getElementById('goal-cards');
   if (!wrap) return;
   wrap.innerHTML = Object.entries(GOALS).map(([key, g]) => `
     <div class="goal-card ${key === state.tempGoal ? 'selected' : ''}"
-         onclick="window.selectGoal('${key}')">
+         data-action="select-goal" data-goal="${key}">
       <div class="goal-icon">${g.icon}</div>
       <div class="goal-name">${g.label}</div>
       <div class="goal-desc">${g.calAdjust > 0 ? '+' : ''}${g.calAdjust} ккал</div>
@@ -115,7 +111,7 @@ export function selectGoal(key) {
 
 /* ---- Нагадування ---- */
 export function updateNotifyUI() {
-  const enabled = document.getElementById('notify-toggle')?.checked;
+  const enabled  = document.getElementById('notify-toggle')?.checked;
   const timeWrap = document.getElementById('notify-time-wrap');
   const status   = document.getElementById('notify-status');
   if (timeWrap) timeWrap.style.display = enabled ? 'block' : 'none';
@@ -186,4 +182,3 @@ export async function saveSettings() {
   renderStats();
   showToast('Налаштування збережено — натисни «Застосувати»');
 }
-
