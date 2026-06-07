@@ -1,48 +1,36 @@
 /* =====================
-   core/storage.js — робота з localStorage
+   core/storage.js — адаптер для зворотної сумісності
+   Делегує до db.js. Публічне API незмінне —
+   решта модулів чіпати не треба.
    ===================== */
 
-import { DEFAULT_PROFILE } from '../data/profile.js';
-
-const PROFILE_KEY   = 'user_profile';
-const DONE_KEY_PREFIX = 'done_';
+import { DEFAULT_PROFILE }                    from '../data/profile.js';
+import { loadDB, saveDB, setProfile, getProfile,
+         isWorkoutDone, toggleWorkout,
+         dayIndexToDate }                      from './db.js';
 
 /* ---- Профіль ---- */
 export function loadProfile() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(PROFILE_KEY));
-    return { ...DEFAULT_PROFILE, ...(saved || {}) };
-  } catch {
-    return { ...DEFAULT_PROFILE };
-  }
+  return getProfile();
 }
 
 export function saveProfile(profile) {
-  localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+  setProfile(profile);
 }
 
 /* ---- Відмітки виконаних тренувань ---- */
-export function getDoneKey(dayIndex) {
-  const today  = new Date();
-  const dow    = today.getDay() === 0 ? 6 : today.getDay() - 1;
-  const monday = new Date(today);
-  monday.setDate(today.getDate() - dow);
-  monday.setHours(0, 0, 0, 0);
-  const target = new Date(monday);
-  target.setDate(monday.getDate() + dayIndex);
-  const yyyy = target.getFullYear();
-  const mm   = String(target.getMonth() + 1).padStart(2, '0');
-  const dd   = String(target.getDate()).padStart(2, '0');
-  return `${DONE_KEY_PREFIX}${yyyy}-${mm}-${dd}_${dayIndex}`;
-}
-
 export function isDone(dayIndex) {
-  return localStorage.getItem(getDoneKey(dayIndex)) === 'true';
+  return isWorkoutDone(dayIndexToDate(dayIndex));
 }
 
 export function toggleDoneStorage(dayIndex) {
-  const key = getDoneKey(dayIndex);
-  const cur = localStorage.getItem(key) === 'true';
-  localStorage.setItem(key, String(!cur));
-  return !cur; /* повертає новий стан */
+  const date = dayIndexToDate(dayIndex);
+  return toggleWorkout(date, dayIndex);
+}
+
+/* getDoneKey залишаємо для сумісності, але він більше не використовується
+   всередині — тільки якщо хтось імпортував ззовні */
+export function getDoneKey(dayIndex) {
+  const date = dayIndexToDate(dayIndex);
+  return `done_${date}_${dayIndex}`;
 }

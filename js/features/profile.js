@@ -3,6 +3,7 @@
    ===================== */
 
 import { GOALS }                         from '../data/profile.js';
+import { exportJSON, importJSON }         from '../core/db.js';
 import { calcTargetCal }                 from '../core/calc.js';
 import { saveProfile }                   from '../core/storage.js';
 import { state }                         from '../core/state.js';
@@ -181,4 +182,37 @@ export async function saveSettings() {
   showApplyButton();
   renderStats();
   showToast('Налаштування збережено — натисни «Застосувати»');
+}
+
+/* =====================
+   ЕКСПОРТ / ІМПОРТ ДАНИХ
+   ===================== */
+export function exportData() {
+  const json = exportJSON();
+  const date = new Date().toISOString().slice(0, 10);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = `fitness-backup-${date}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✓ Резервну копію збережено');
+}
+
+export function importData(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const result = importJSON(e.target.result);
+    if (result.ok) {
+      showToast('✓ Дані імпортовано — перезавантаж сторінку');
+      /* Перезавантаження потрібне, щоб усі модулі
+         підтягнули свіжий стан із нової БД */
+      setTimeout(() => location.reload(), 1500);
+    } else {
+      showToast(`✗ Помилка: ${result.error}`);
+    }
+  };
+  reader.readAsText(file);
 }

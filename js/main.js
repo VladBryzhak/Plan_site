@@ -16,7 +16,8 @@ import { notifySchedule }            from './notifications.js';
 import { renderStats, editStat, showApplyButton,
          openSettings, closeSettings,
          renderGoalCards, selectGoal,
-         saveSettings, onNotifyToggle, updateNotifyUI, testNotification }
+         saveSettings, onNotifyToggle, updateNotifyUI, testNotification,
+         exportData, importData }
   from './features/profile.js';
 
 import { renderWorkout, renderSched, selectDay,
@@ -190,4 +191,11 @@ function initEventListeners() {
       const card = e.target.closest('[data-action="select-goal"]');
       if (card) selectGoal(card.dataset.goal);
     });
+
+  /* ---- Експорт / Імпорт даних ---- */
+  document.getElementById('btn-export-json')
+    ?.addEventListener('click', exportData);
+
+  document.getElementById('input-import-json')
+    ?.addEventListener('change', e => importData(e.target.files[0]));
 }

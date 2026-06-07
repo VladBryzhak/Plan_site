@@ -312,3 +312,34 @@
         font-size: 12px;
     }
 }
+/* ---- Секція даних (експорт/імпорт) ---- */
+.data-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.btn-data {
+  flex: 1;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--text);
+  font: 500 13px var(--font);
+  cursor: pointer;
+  text-align: center;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.btn-data:hover {
+  background: var(--teal-bg);
+  border-color: var(--teal);
+  color: var(--teal-text);
+}
+
+.data-hint {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0 0 4px;
+}
