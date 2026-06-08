@@ -31,6 +31,8 @@ import { renderNutrition, renderMacroBar, showWeek } from './features/nutrition.
 
 import { openCalModal, closeCalModal, generateICS } from './features/calendar.js';
 
+import { renderTips } from './features/tips.js';
+
 import { timerTogglePause, timerAddTime, timerReset, timerClose } from './timer.js';
 
 /* =====================
@@ -49,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderMacroBar();
   renderNutrition(1);
   renderStreakStat();
+  renderTips();
 
   if (state.profile.notifyEnabled && state.profile.notifyTime) {
     notifySchedule(state.profile.notifyTime);
@@ -72,6 +75,7 @@ function applyChanges() {
 
   const wk = document.getElementById('btn-w2')?.classList.contains('active') ? 2 : 1;
   renderNutrition(wk);
+  renderTips();
 
   const cal = calcTargetCal(state.profile);
   const m   = calcMacros(state.profile);
@@ -130,7 +134,7 @@ function initEventListeners() {
     ?.addEventListener('click', closeSettings);
 
   document.getElementById('btn-save-settings')
-    ?.addEventListener('click', saveSettings);
+    ?.addEventListener('click', async () => { await saveSettings(); renderTips(); });
 
   document.getElementById('btn-test-notify')
     ?.addEventListener('click', testNotification);

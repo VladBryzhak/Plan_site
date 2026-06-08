@@ -19,8 +19,9 @@ const TRAINING_DAYS = new Set(
 );
 
 /* ---- Утиліти дат ---- */
+/* Локальна дата у форматі YYYY-MM-DD (не UTC, щоб уникнути зсуву по таймзоні) */
 function toDateStr(d) {
-  return d.toISOString().slice(0, 10);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
 function getDayIndex(dateStr) {
@@ -34,10 +35,14 @@ export function calcStreak() {
   const today     = toDateStr(new Date());
   let   streak    = 0;
 
+  /* Курсор на 12:00 дня — щоб перехід на літній/зимовий час
+     не зміщував дату при вніченні дня */
+  const cursor = new Date();
+  cursor.setHours(12, 0, 0, 0);
+
   for (let i = 0; i < 366; i++) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    const date    = toDateStr(d);
+    if (i > 0) cursor.setDate(cursor.getDate() - 1);
+    const date    = toDateStr(cursor);
     const dayIdx  = getDayIndex(date);
     const isToday = date === today;
 
@@ -59,7 +64,9 @@ function calcWeekCount() {
   const dow = now.getDay() === 0 ? 6 : now.getDay() - 1;
   now.setDate(now.getDate() - dow);
   const monday     = toDateStr(now);
-  const nextMonday = toDateStr(new Date(now.getTime() + 7 * 86400000));
+  const nm         = new Date(now);
+  nm.setDate(nm.getDate() + 7);
+  const nextMonday = toDateStr(nm);
   return log.filter(e => e.date >= monday && e.date < nextMonday).length;
 }
 

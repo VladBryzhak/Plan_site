@@ -18,6 +18,11 @@ import { DEFAULT_PROFILE } from '../data/profile.js';
 const DB_KEY        = 'fitness_db';
 const SCHEMA_VERSION = 1;
 
+/** Локальна дата у форматі YYYY-MM-DD (без UTC-зміщення) */
+function localDate(d = new Date()) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 const DEFAULT_DB = {
   _version:   SCHEMA_VERSION,
   profile:    { ...DEFAULT_PROFILE },
@@ -29,7 +34,7 @@ const DEFAULT_DB = {
    ВНУТРІШНІ УТИЛІТИ
    ===================== */
 
-/** Перетворює dayIndex поточного тижня у рядок 'YYYY-MM-DD' */
+/** Перетворює dayIndex поточного тижня у рядок 'YYYY-MM-DD' (локальна дата) */
 export function dayIndexToDate(dayIndex) {
   const today  = new Date();
   const dow    = today.getDay() === 0 ? 6 : today.getDay() - 1;
@@ -38,7 +43,9 @@ export function dayIndexToDate(dayIndex) {
   monday.setHours(0, 0, 0, 0);
   const target = new Date(monday);
   target.setDate(monday.getDate() + dayIndex);
-  return target.toISOString().slice(0, 10);
+  /* Використовуємо локальні методи, а не toISOString() —
+     toISOString() повертає UTC і дає неправильну дату для UTC+2/+3 */
+  return `${target.getFullYear()}-${String(target.getMonth() + 1).padStart(2, '0')}-${String(target.getDate()).padStart(2, '0')}`;
 }
 
 /** Мігрує старі ключі (user_profile + done_*) у нову схему */
@@ -53,12 +60,18 @@ function migrateFromLegacy() {
     try { db.profile = { ...DEFAULT_PROFILE, ...JSON.parse(oldProfile) }; } catch {}
   }
 
-  /* done_YYYY-MM-DD_N → workoutLog */
+  /* done_YYYY-MM-DD_N → workoutLog
+     Стара схема зберігала дату ПОНЕДІЛКА для всіх днів тижня.
+     Обчислюємо реальну дату: понеділок + dayIndex днів. */
   for (const key of Object.keys(localStorage)) {
     if (!key.startsWith('done_')) continue;
     if (localStorage.getItem(key) !== 'true') continue;
     const m = key.match(/^done_(\d{4}-\d{2}-\d{2})_(\d)$/);
-    if (m) db.workoutLog.push({ date: m[1], dayIndex: Number(m[2]) });
+    if (!m) continue;
+    const dayIndex = Number(m[2]);
+    const monday   = new Date(m[1] + 'T12:00:00'); /* noon щоб уникнути DST */
+    monday.setDate(monday.getDate() + dayIndex);    /* реальна дата дня */
+    db.workoutLog.push({ date: localDate(monday), dayIndex });
   }
 
   return db;
@@ -158,7 +171,8 @@ export function getWeights() {
 }
 
 export function addWeight(value) {
-  const date = new Date().toISOString().slice(0, 10);
+  const now  = new Date();
+  const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   const db   = loadDB();
   /* Якщо запис за сьогодні вже є — оновлюємо */
   const idx  = db.weights.findIndex(w => w.date === date);

@@ -20,4 +20,4 @@
 @import url('./components/timer.css');
 
 /* Utils — адаптивність */
-@import url('./utils/responsive.css');
+@import url('./utils/responsive.css');@import url('./components/tips.css');
