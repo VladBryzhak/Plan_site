@@ -4,7 +4,7 @@
    змінити тільки CACHE_VERSION нижче.
    ===================== */
 
-const CACHE_VERSION  = 'v8';
+const CACHE_VERSION  = 'v9';
 const CACHE_NAME     = `fitness-plan-${CACHE_VERSION}`;
 
 const FILES_TO_CACHE = [
@@ -46,6 +46,7 @@ const FILES_TO_CACHE = [
   './js/features/nutrition.js',
   './js/features/profile.js',
   './js/features/calendar.js',
+  './js/features/streaks.js',
   /* JS — standalone */
   './js/timer.js',
   './js/notifications.js',
@@ -83,33 +84,28 @@ self.addEventListener('fetch', event => {
   if (event.request.url.startsWith('chrome-extension://')) return;
   if (SKIP_CACHE.some(s => event.request.url.includes(s))) return;
 
-  /* Навігаційні запити (HTML) — спочатку мережа, щоб оновлення
-     деплою одразу доходили до користувача без ручного бампу */
+  /* Навігаційні запити (HTML) — мережа без повторного кешування.
+     HTML вже є в кеші з install; network-first просто дає свіжу версію. */
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request)
-        .then(response => {
-          if (response?.status === 200) {
-            caches.open(CACHE_NAME)
-              .then(cache => cache.put(event.request, response.clone()));
-          }
-          return response;
-        })
-        .catch(() => caches.match('./index.html'))
+      fetch(event.request).catch(() => caches.match('./index.html'))
     );
     return;
   }
 
-  /* Всі інші ресурси (JS, CSS, іконки) — cache-first */
+  /* Всі інші ресурси (JS, CSS, іконки) — cache-first.
+     Клонуємо response СИНХРОННО до будь-якого await/then,
+     інакше браузер вже читає тіло і clone падає з "body is already used". */
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) return cached;
       return fetch(event.request).then(response => {
-        if (response?.status === 200) {
+        if (response?.ok) {
+          const clone = response.clone();          /* ← clone одразу */
           caches.open(CACHE_NAME)
-            .then(cache => cache.put(event.request, response.clone()));
+            .then(cache => cache.put(event.request, clone)); /* clone йде в кеш */
         }
-        return response;
+        return response;                           /* оригінал — браузеру */
       }).catch(() => {
         if (event.request.destination === 'document') {
           return caches.match('./index.html');

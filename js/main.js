@@ -25,6 +25,8 @@ import { renderWorkout, renderSched, selectDay,
          toggleExercise, reloadVideo, startRestTimer }
   from './features/workout.js';
 
+import { renderStreakStat } from './features/streaks.js';
+
 import { renderNutrition, renderMacroBar, showWeek } from './features/nutrition.js';
 
 import { openCalModal, closeCalModal, generateICS } from './features/calendar.js';
@@ -46,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
   selectDay(getTodayIndex());
   renderMacroBar();
   renderNutrition(1);
-  updateDoneCount();
+  renderStreakStat();
 
   if (state.profile.notifyEnabled && state.profile.notifyTime) {
     notifySchedule(state.profile.notifyTime);
@@ -181,7 +183,10 @@ function initEventListeners() {
         case 'toggle-exercise': toggleExercise(Number(btn.dataset.ex)); break;
         case 'reload-video':    reloadVideo(Number(btn.dataset.ex));    break;
         case 'start-timer':     startRestTimer();                       break;
-        case 'toggle-done':     toggleDone(Number(btn.dataset.day));    break;
+        case 'toggle-done':
+          toggleDone(Number(btn.dataset.day));
+          renderStreakStat();
+          break;
       }
     });
 
