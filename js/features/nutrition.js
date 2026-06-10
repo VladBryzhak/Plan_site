@@ -2,10 +2,11 @@
    features/nutrition.js — рендер харчування і макро-панелі
    ===================== */
 
-import { WEEK1, WEEK2 }    from '../data/nutrition.js';
-import { GOALS }           from '../data/profile.js';
+import { WEEK1, WEEK2 }                       from '../data/nutrition.js';
+import { GOALS }                              from '../data/profile.js';
 import { calcMacros, calcTargetCal, calcPortion } from '../core/calc.js';
-import { state }           from '../core/state.js';
+import { state }                              from '../core/state.js';
+import { findSubs }                           from '../data/substitutes.js';
 
 /* ---- Макро-панель ---- */
 export function renderMacroBar() {
@@ -34,6 +35,59 @@ export function renderMacroBar() {
     </div>`;
 }
 
+/* ---- Рядок інгредієнта з кнопкою замінника ---- */
+function renderIngredient(item, profile) {
+  const portion = calcPortion(item, profile);
+
+  /* Фіксовані або нерозмірні позиції — без кнопки */
+  if (item.fixed || !['г', 'мл'].includes(item.unit)) {
+    return `<div class="ing-wrap"><div class="ing-row">${portion}&nbsp;${item.name}</div></div>`;
+  }
+
+  const subs = findSubs(item.name, profile.goal);
+  if (!subs?.length) {
+    return `<div class="ing-wrap"><div class="ing-row">${portion}&nbsp;${item.name}</div></div>`;
+  }
+
+  /* Числова частина порції для розрахунку кількості замінника */
+  const amount = parseInt(portion);
+
+  const subsHTML = subs.map(s => {
+    let qty;
+    if (s.ratio === null) {
+      qty = '—';
+    } else if (s.ratio === 0 || s.ratio < 0.1) {
+      qty = s.note ?? '—';
+    } else {
+      const val = Math.round(amount * s.ratio);
+      qty = `≈ ${val}&nbsp;${item.unit}`;
+    }
+
+    const noteHTML = s.note && s.ratio !== 0 && s.ratio !== null
+      ? `<span class="sub-note">${s.note}</span>`
+      : '';
+
+    return `
+      <div class="sub-item">
+        <span class="sub-qty">${qty}</span>
+        <span class="sub-name">${s.name}</span>
+        ${noteHTML}
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="ing-wrap">
+      <div class="ing-row has-swap">
+        <span class="ing-text">${portion}&nbsp;${item.name}</span>
+        <button class="swap-btn" data-action="toggle-subs" aria-label="Показати замінники">⇄</button>
+      </div>
+      <div class="ing-subs">
+        <div class="subs-label">Замінники</div>
+        ${subsHTML}
+      </div>
+    </div>`;
+}
+
 /* ---- Рендер харчування ---- */
 export function renderNutrition(weekNum) {
   const container = document.getElementById('nutrition-content');
@@ -42,14 +96,15 @@ export function renderNutrition(weekNum) {
   const data = weekNum === 1 ? WEEK1 : WEEK2;
   container.innerHTML = data.map(d => {
     const mealsHTML = d.meals.map(meal => {
-      const desc = meal.items
-        .map(it => `${calcPortion(it, state.profile)} ${it.name}`)
-        .join(' + ');
+      const ingsHTML = meal.items
+        .map(it => renderIngredient(it, state.profile))
+        .join('');
+
       return `
         <div class="meal-card">
           <div class="meal-time">${meal.t}</div>
           <div class="meal-name">${meal.n}</div>
-          <div class="meal-desc">${desc}</div>
+          <div class="meal-ings">${ingsHTML}</div>
         </div>`;
     }).join('');
 

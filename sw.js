@@ -4,7 +4,7 @@
    змінити тільки CACHE_VERSION нижче.
    ===================== */
 
-const CACHE_VERSION  = 'v10';
+const CACHE_VERSION  = 'v11';
 const CACHE_NAME     = `fitness-plan-${CACHE_VERSION}`;
 
 const FILES_TO_CACHE = [
@@ -34,6 +34,7 @@ const FILES_TO_CACHE = [
   './js/data/profile.js',
   './js/data/workouts.js',
   './js/data/nutrition.js',
+  './js/data/substitutes.js',
   /* JS — core */
   './js/core/state.js',
   './js/core/calc.js',

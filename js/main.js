@@ -158,6 +158,13 @@ function initEventListeners() {
   document.getElementById('btn-w2')
     ?.addEventListener('click', () => showWeek(2));
 
+  /* ---- Харчування: кнопка замінника ---- */
+  document.getElementById('nutrition-content')
+    ?.addEventListener('click', e => {
+      const btn = e.target.closest('[data-action="toggle-subs"]');
+      if (btn) btn.closest('.ing-wrap')?.classList.toggle('open');
+    });
+
   /* ---- Таймер: делегування на #rest-timer ---- */
   document.getElementById('rest-timer')
     ?.addEventListener('click', e => {
